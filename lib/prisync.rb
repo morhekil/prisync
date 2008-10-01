@@ -49,10 +49,6 @@ class Prisync
     while (true) do
       begin
         self.monitor_changes
-      rescue SystemExit
-        # end execution on the relevant exception
-        self.cleanup
-        raise
       rescue
         print "Exception: ",$!, "\n"
       end
@@ -87,9 +83,11 @@ class Prisync
   # Actually synchronizes the files by calling rsync using the pre-built command line
   def synchronize
     print "#{@rsync_cmd}\n" if @is_debug
-    errorvalue = system @rsync_cmd
-    $strerr.print "rsync error status #{$?}" if errorvalue > 0
-    raise SystemExit if errorvalue == 20 || errorvalue == 255
+    system @rsync_cmd
+    errorvalue = $?
+    errorvalue = errorvalue.exitstatus if errorvalue.kind_of?(Process::Status)
+    $stderr.print "rsync error status #{errorvalue}\n" if @is_debug
+    self.cleanup if errorvalue == 20 || errorvalue == 255
   end
 
   # Cleans up before exit, closing inotify connection

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'prisync'
-  s.version = "0.2"
+  s.version = "0.2.1"
   s.date     = "2008-10-01"
   s.summary = "Pseudo-realtime file synchronization daemon."
   s.description = %{Prisync allows to synchronize to local or remote directories in a pseudo-realtime fashion.

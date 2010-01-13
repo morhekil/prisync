@@ -37,6 +37,7 @@ class Prisync
       @sync_cmd = 'rsync -azcC --force --delete '
       @sync_cmd += '--dry-run ' if opts[:dryrun]
       @sync_cmd += '--progress ' if @is_debug
+      @sync_cmd += opts[:extra]+' '
       @sync_cmd += "-e \"ssh -p#{opts[:port]}\" " if opts[:port]
       @sync_cmd += "#{opts[:local_path]} #{opts[:remote_path]}"
     else
@@ -44,6 +45,7 @@ class Prisync
       @sync_cmd = 'ftpsync.pl -p '
       @sync_cmd += '-i ' if opts[:dryrun]
       @sync_cmd += '-v ' if @is_debug
+      @sync_cmd += opts[:extra]+' '
       @sync_cmd += "#{opts[:local_path]} #{opts[:remote_path]}"
     end
 

@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/../lib/prisync'
 
 # get a list of files in the specified path
 
-options = { :local_path => Dir::pwd, :mode => :rsync }
+options = { :local_path => Dir::pwd, :mode => :rsync, :extra => '' }
 
 OptionParser.new do |opts|
   opts.banner = "Usage: prisync [options]"
@@ -32,6 +32,10 @@ OptionParser.new do |opts|
   opts.on('--mode [MODE]', [:ftpsync, :rsync], 'synchronization mode, rsync or ftpsync.',
           'Defaults to rsync if omitted.') do |mode|
     options[:mode] = mode
+  end
+
+  opts.on('--extra [EXTRA]', 'any extra options to give rsync or ftpsync, will be added as is') do |extraopts|
+    options[:extra] = extraopts
   end
 
   opts.on('-t', '--timeout [SECONDS]', Integer, 'Time to wait for any new changes to arrive before',

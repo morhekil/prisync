@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/../lib/prisync'
 
 # get a list of files in the specified path
 
-options = { :local_path => Dir::pwd }
+options = { :local_path => Dir::pwd, :mode => :rsync }
 
 OptionParser.new do |opts|
   opts.banner = "Usage: prisync [options]"
@@ -20,9 +20,18 @@ OptionParser.new do |opts|
     options[:remote_path] = path
   end
 
-  opts.on('--ssh-port [PORT]', Integer, 'SSH port to use if you want to sync with remote host via SSH tunnel,',
-          'you HAVE to specify remote host in the target-path option') do |port|
-    options[:ssh_port] = port
+  opts.on('--ssh-port [PORT]', Integer, 'deprecated. Use --port instead.') do |port|
+    options[:port] = port
+  end
+
+  opts.on('--port [PORT]', Integer, 'remote ssh port to use, if you want to rsync via ssh tunnel.',
+          'You HAVE to specify remote host name in the target-path option. rsync mode only.') do |port|
+    options[:port] = port
+  end
+
+  opts.on('--mode [MODE]', [:ftpsync, :rsync], 'synchronization mode, rsync or ftpsync.',
+          'Defaults to rsync if omitted.') do |mode|
+    options[:mode] = mode
   end
 
   opts.on('-t', '--timeout [SECONDS]', Integer, 'Time to wait for any new changes to arrive before',
@@ -46,7 +55,7 @@ OptionParser.new do |opts|
     options[:debug] = true
   end
 
-  opts.on('--dry', 'Only print the rsync command without actually executing it') do
+  opts.on('--dry', 'Only print the sync command without actually executing it') do
     options[:dryrun] = true
   end
 
@@ -59,4 +68,3 @@ end.parse!
 
 sync = Prisync.new
 sync.start(options)
-
